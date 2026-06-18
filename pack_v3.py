@@ -88,19 +88,33 @@ skip_4k_nand = "false"
 atf = "false"
 img_suffix = ""
 bootldr_only = "false"
-supported_arch = ["ipq9650_64", "ipq9650", "ipq5210", "ipq5210_64", "ipq5424", "ipq5424_64", "ipq5332", "ipq5332_64"]
+supported_arch = ["ipq9650_64", "ipq9650", "ipq5210", "ipq5210_64", "ipq5424", "ipq5424_64", "ipq5332", "ipq5332_64", "ipq40xx", "ipq806x", "ipq807x", "ipq807x_64", "ipq5018", "ipq5018_64", "ipq6018", "ipq6018_64", "ipq9574", "ipq9574_64", "ipq9048", "ipq9048_64"]
 split_by_rdp_supported_arch = ["ipq5210", "ipq9650"]
 supported_flash_type = {}
 supported_flash_type["ipq5332"] = { "nand", "nor", "tiny-nor", "emmc", "norplusnand", "norplusemmc", "tiny-nor-debug" };
 supported_flash_type["ipq5424"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" , "tiny-nor", "tiny-nor-debug" };
 supported_flash_type["ipq5210"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" };
 supported_flash_type["ipq9650"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc", "norplusnand-gpt", "norplusemmc-gpt" };
+supported_flash_type["ipq40xx"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc" };
+supported_flash_type["ipq806x"] = { "nor", "nand", "emmc", "norplusnand", "norplusemmc" };
+supported_flash_type["ipq807x"] = { "nor", "nand", "tiny-nor", "emmc", "norplusnand", "norplusemmc", "tiny-nor-debug" };
+supported_flash_type["ipq5018"] = { "nor", "nand", "tiny-nor", "emmc", "norplusnand", "norplusemmc", "tiny-nor-debug" };
+supported_flash_type["ipq6018"] = { "nor", "nand", "tiny-nor", "emmc", "norplusnand", "norplusemmc", "tiny-nor-debug" };
+supported_flash_type["ipq9574"] = { "nor", "nand", "tiny-nor", "emmc", "norplusnand", "norplusemmc", "tiny-nor-debug" };
+supported_flash_type["ipq9048"] = { "nor", "nand", "tiny-nor", "emmc", "norplusnand", "norplusemmc", "tiny-nor-debug" };
 gpt_flash = ["nor-gpt", "emmc"]
 soc_hw_versions = {}
 soc_hw_versions["ipq5332"] = { 0x201A0100, 0x201A0101 };
 soc_hw_versions["ipq5424"] = { 0xE0010100 };
 soc_hw_versions["ipq5210"] = { 0xE0030100 };
 soc_hw_versions["ipq9650"] = { 0xE0020100 };
+soc_hw_versions["ipq40xx"] = { 0x20050100 };
+# Note: ipq806x didn't expose any relevant soc_hw_version */
+soc_hw_versions["ipq807x"] = { 0x200D0100, 0x200D0101, 0x200D0102, 0x200D0200 };
+soc_hw_versions["ipq6018"] = { 0x20170100 };
+soc_hw_versions["ipq5018"] = { 0x20180100, 0x20180101 };
+soc_hw_versions["ipq9574"] = { 0x20190100 };
+# No soc_hw_versions for ipq806x and ipq9048
 
 #
 # Python 2.6 and earlier did not have OrderedDict use the backport
@@ -257,6 +271,7 @@ class MIBIB(object):
     TABLE_FMT = "<LLLL"
     TABLE_MAGIC1 = 0x55EE73AA
     TABLE_MAGIC2 = 0xE35EBDDB
+    TABLE_VERSION_IPQ806X = 3
     TABLE_VERSION_OTHERS = 4
 
 
@@ -305,7 +320,10 @@ class MIBIB(object):
             mtable.magic2 = MIBIB.TABLE_MAGIC2 """
             error("invalid sys part. table, magic byte not present")
 
-        if mtable.version != MIBIB.TABLE_VERSION_OTHERS:
+        if ARCH_NAME == "ipq806x":
+            if mtable.version != MIBIB.TABLE_VERSION_IPQ806X:
+                error("unsupported partition table version")
+        elif mtable.version != MIBIB.TABLE_VERSION_OTHERS:
             error("unsupported partition table version")
 
         for i in range(mtable.numparts):
@@ -712,7 +730,7 @@ class Pack(object):
         script = FlashScript(flinfo)
 
         chip_count = 0
-        for soc_hw_version in soc_hw_versions[ARCH_NAME]:
+        for soc_hw_version in soc_hw_versions.get(ARCH_NAME, set()):
             if skip_test:
                 break;
             chip_count = chip_count + 1

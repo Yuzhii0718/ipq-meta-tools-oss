@@ -167,6 +167,7 @@ def main():
                         boot_settings.text = str(int(boot_settings.text) | 2048)
 
             if ARCH_NAME == "ipq807x":
+                if data_retention != None:
                     if data_retention.text == "true":
                         boot_settings = root_cdt.find(".//device[@id='cdb2']/props[@name='boot_settings']")
                         # overwritting Bit 11 for Warm reboot and DDR data retention

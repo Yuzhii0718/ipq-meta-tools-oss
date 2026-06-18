@@ -92,6 +92,9 @@ soc_hw_version_ipq6018 = { 0x20170100 };
 soc_hw_version_ipq5018 = { 0x20180100, 0x20180101 };
 soc_hw_version_ipq9574 = { 0x20190100 };
 soc_hw_version_ipq5332 = { 0x201A0100, 0x201A0101 };
+soc_hw_version_ipq5424 = { 0xE0010100 };
+soc_hw_version_ipq5210 = { 0xE0030100 };
+soc_hw_version_ipq9650 = { 0xE0020100 };
 
 #
 # Python 2.6 and earlier did not have OrderedDict use the backport
@@ -1338,6 +1341,13 @@ class Pack(object):
             soc_hw_versions = soc_hw_version_ipq9574
         if ARCH_NAME == "ipq5332" or ARCH_NAME == "ipq5332_64":
             soc_hw_versions = soc_hw_version_ipq5332
+        if ARCH_NAME == "ipq5424" or ARCH_NAME == "ipq5424_64":
+            soc_hw_versions = soc_hw_version_ipq5424
+        if ARCH_NAME == "ipq5210" or ARCH_NAME == "ipq5210_64":
+            soc_hw_versions = soc_hw_version_ipq5210
+        if ARCH_NAME == "ipq9650" or ARCH_NAME == "ipq9650_64":
+            soc_hw_versions = soc_hw_version_ipq9650
+        # Note: ipq9048 has no known soc_hw_version, skip validation like ipq806x
 
         chip_count = 0
         for soc_hw_version in soc_hw_versions:
@@ -2644,14 +2654,17 @@ class ArgParser(object):
 #Verify Arguments passed by user
 
 # Verify arch type
-            if ARCH_NAME not in ["ipq40xx", "ipq806x", "ipq807x", "ipq807x_64", "ipq6018", "ipq6018_64", "ipq5018", "ipq5018_64", "ipq9574", "ipq9574_64", "ipq5332", "ipq5332_64"]:
+            if ARCH_NAME not in ["ipq40xx", "ipq806x", "ipq807x", "ipq807x_64", "ipq6018", "ipq6018_64", "ipq5018", "ipq5018_64", "ipq9574", "ipq9574_64", "ipq5332", "ipq5332_64", "ipq5424", "ipq5424_64", "ipq5210", "ipq5210_64", "ipq9650", "ipq9650_64", "ipq9048", "ipq9048_64"]:
                 raise UsageError("Invalid arch type '%s'" % arch)
 
-            if ARCH_NAME == "ipq807x" or ARCH_NAME == "ipq5018" or ARCH_NAME == "ipq9574" or ARCH_NAME == "ipq5332":
+            if ARCH_NAME == "ipq807x" or ARCH_NAME == "ipq5018" or ARCH_NAME == "ipq9574" or ARCH_NAME == "ipq5332" or ARCH_NAME == "ipq5424" or ARCH_NAME == "ipq5210" or ARCH_NAME == "ipq9650" or ARCH_NAME == "ipq9048":
                 MODE = "32"
-            elif ARCH_NAME == "ipq807x_64" or ARCH_NAME == "ipq5018_64" or ARCH_NAME == "ipq9574_64" or ARCH_NAME == "ipq5332_64":
+            elif ARCH_NAME == "ipq807x_64" or ARCH_NAME == "ipq5018_64" or ARCH_NAME == "ipq9574_64" or ARCH_NAME == "ipq5332_64" or ARCH_NAME == "ipq5424_64" or ARCH_NAME == "ipq5210_64" or ARCH_NAME == "ipq9650_64" or ARCH_NAME == "ipq9048_64":
                 MODE = "64"
                 ARCH_NAME = ARCH_NAME[:-3]
+
+            if ARCH_NAME == "ipq40xx" or ARCH_NAME == "ipq806x":
+                MODE = "32"
 
             if ARCH_NAME == "ipq6018":
                 MODE = "32"
