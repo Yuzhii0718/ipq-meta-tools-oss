@@ -1,0 +1,17 @@
+# python
+*.pyc
+*.pyo
+*.pyd
+*.egg-info
+dist
+build
+
+# output
+in
+machid_xml
+data_retention_cdt
+output
+*.mbn
+*.elf
+*.bin
+*.img
