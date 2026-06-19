@@ -37,6 +37,9 @@ import re
 import sys
 import errno
 
+cdir = os.path.dirname(os.path.abspath(__file__))
+cdir = os.path.dirname(cdir)  # Go up from scripts/ to project root
+
 class TemplateManager:
     """
     Unified class for handling ITS template operations, supporting both conditional and non-conditional templates.
@@ -844,7 +847,7 @@ class FitImageGenerator:
         try:
             # Use subprocess.call() instead of Popen
             returncode = subprocess.call(
-                ['mkimage', '-E', '-f', os.path.basename(self.its_file), os.path.basename(self.img_file)],
+                [os.path.join(cdir, 'mkimage'), '-E', '-f', os.path.basename(self.its_file), os.path.basename(self.img_file)],
                 cwd=self.output_dir,
                 shell=False  # Explicitly set shell=False to prevent command injection
             )

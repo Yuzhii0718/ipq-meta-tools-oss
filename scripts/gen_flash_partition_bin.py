@@ -77,9 +77,9 @@ def process_nand_device(pagesize, pages_per_block, total_blocks, entry, nand_typ
     mbn_gen = mbn_gen.replace('$$', cdir)
 
     if ARCH_NAME == "ipq806x":
-        partition_tool = outputdir + '/nor_tool'
+        partition_tool = cdir + '/nor_tool'
     else:
-        partition_tool = outputdir + '/partition_tool'
+        partition_tool = cdir + '/partition_tool'
     os.chmod(partition_tool, 0o744)
 
     if nand_layout != None:
@@ -142,9 +142,9 @@ def process_nand_device(pagesize, pages_per_block, total_blocks, entry, nand_typ
                     '-b',
                     str(nand_parts.total_blocks),
                     '-u',
-                    userpart_path,
+                    os.path.abspath(userpart_path),
                     '-o',
-                    nandsyspartition,
+                    os.path.abspath(nandsyspartition),
                     ], cwd=outputdir)
     prc.wait()
     if prc.returncode != 0:
@@ -250,7 +250,7 @@ def process_nor(config_path, flash_type):
     mbn_gen = '$$/scripts/nand_mbn_generator.py'
     mbn_gen = mbn_gen.replace('$$', cdir)
 
-    partition_tool = outputdir + '/partition_tool'
+    partition_tool = cdir + '/partition_tool'
     os.chmod(partition_tool, 0o744)
 
     nor_param = None
@@ -317,9 +317,9 @@ def process_nor(config_path, flash_type):
                             '-c',
                             str(1),
                             '-u',
-                            userpart_path,
+                            os.path.abspath(userpart_path),
                             '-o',
-                            syspart,
+                            os.path.abspath(syspart),
                             ], cwd=outputdir)
             prc.wait()
             if prc.returncode != 0:
@@ -380,9 +380,9 @@ def process_nor(config_path, flash_type):
                     '-c',
                     str(1),
                     '-u',
-                    userpart_path,
+                    os.path.abspath(userpart_path),
                     '-o',
-                    syspart,
+                    os.path.abspath(syspart),
                     ], cwd=outputdir)
     prc.wait()
     if prc.returncode != 0:
@@ -449,9 +449,9 @@ def process_norplusnand_device(nor_pagesize, nor_pages_per_block, nor_total_bloc
     mbn_gen = mbn_gen.replace('$$', cdir)
 
     if ARCH_NAME == "ipq806x":
-        partition_tool = outputdir + '/nor_tool'
+        partition_tool = cdir + '/nor_tool'
     else:
-        partition_tool = outputdir + '/partition_tool'
+        partition_tool = cdir + '/partition_tool'
     os.chmod(partition_tool, 0o744)
 
     if nand_layout != None:
@@ -524,9 +524,9 @@ def process_norplusnand_device(nor_pagesize, nor_pages_per_block, nor_total_bloc
                     '-c',
                     str(1),
                     '-u',
-                    userpart_path,
+                    os.path.abspath(userpart_path),
                     '-o',
-                    norplusnandsyspartition,
+                    os.path.abspath(norplusnandsyspartition),
                     ], cwd=outputdir)
     prc.wait()
     if prc.returncode != 0:
@@ -990,9 +990,9 @@ def process_norplusemmc_device(nor_pagesize, nor_pages_per_block, nor_total_bloc
     mbn_gen = mbn_gen.replace('$$', cdir)
 
     if ARCH_NAME == "ipq806x":
-        partition_tool = outputdir + '/nor_tool'
+        partition_tool = cdir + '/nor_tool'
     else:
-        partition_tool = outputdir + '/partition_tool'
+        partition_tool = cdir + '/partition_tool'
     os.chmod(partition_tool, 0o744)
 
     norplusemmcuserbin= os.path.splitext(userpart)[0] + ".bin"
@@ -1025,9 +1025,9 @@ def process_norplusemmc_device(nor_pagesize, nor_pages_per_block, nor_total_bloc
                     '-c',
                     str(1),
                     '-u',
-                    userpart_path,
+                    os.path.abspath(userpart_path),
                     '-o',
-                    syspart,
+                    os.path.abspath(syspart),
                     ], cwd=outputdir)
     prc.wait()
     if prc.returncode != 0:

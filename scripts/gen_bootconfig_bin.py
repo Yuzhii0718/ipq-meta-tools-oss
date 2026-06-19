@@ -155,6 +155,10 @@ def process_bootconfig(config_file):
     global cdir
     global flag
 
+    # Ensure output directory exists
+    if not os.path.exists(outputdir):
+        os.makedirs(outputdir)
+
     tree = ET.parse(config_file)
     root = tree.getroot()
 
@@ -207,10 +211,10 @@ def process_bootconfig(config_file):
         else:
             print('...Raw partition created')
 
-        bootconfig_gen = outputdir + '/bootconfig_tool'
+        bootconfig_gen = cdir + '/bootconfig_tool'
         os.chmod(bootconfig_gen, 0o744)
+        nand_bootconfig = os.path.abspath(outputdir + '/' + os.path.splitext(file)[0] + '.bin')
         rawpart_path = os.path.join(outputdir, nand_raw_bootconfig)
-        nand_bootconfig = outputdir + '/' + os.path.splitext(file)[0] + '.bin'
 
         # Create nand bootconfig
         print('\tCreating Nand bootconfig')
@@ -221,7 +225,7 @@ def process_bootconfig(config_file):
                         '-p',
                         str(nand_pages_per_block),
                         '-i',
-                        rawpart_path,
+                        os.path.abspath(rawpart_path),
                         '-o',
                         nand_bootconfig,
                         ], cwd=outputdir)
@@ -230,8 +234,8 @@ def process_bootconfig(config_file):
             print('ERROR: unable to create system partition')
             return prc.returncode
         else:
-            try_bootconfig_0 = outputdir + '/' + 'bootconfig0-try.bin'
-            try_bootconfig_1 = outputdir + '/' + 'bootconfig1-try.bin'
+            try_bootconfig_0 = os.path.abspath(outputdir + '/' + 'bootconfig0-try.bin')
+            try_bootconfig_1 = os.path.abspath(outputdir + '/' + 'bootconfig1-try.bin')
 
             shutil.copy(nand_bootconfig, try_bootconfig_0)
             shutil.copy(nand_bootconfig, try_bootconfig_1)

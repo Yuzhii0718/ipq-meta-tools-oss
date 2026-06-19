@@ -76,6 +76,7 @@ import xml.etree.ElementTree as ET
 version = "1.1"
 ARCH_NAME = ""
 SRC_DIR = ""
+CDIR = os.path.abspath(os.path.dirname(__file__))
 MODE = ""
 image_type = "all"
 memory_size = "default"
@@ -2234,7 +2235,7 @@ class Pack(object):
         its_fp.close()
 
         try:
-            cmd = [SRC_DIR + "/mkimage", "-f", self.its_fname, self.img_fname]
+            cmd = [CDIR + "/mkimage", "-f", self.its_fname, self.img_fname]
             ret = subprocess.call(cmd)
             if ret != 0:
                 print(ret)

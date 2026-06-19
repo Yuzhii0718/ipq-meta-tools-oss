@@ -189,13 +189,19 @@ def gen_cdt():
     if arch not in ["ipq807x", "ipq807x_64", "ipq6018", "ipq6018_64", "ipq5018", "ipq5018_64", "ipq9574", "ipq9574_64", "ipq5332", "ipq5332_64", "ipq5424", "ipq5424_64", "ipq5210", "ipq5210_64", "ipq9650", "ipq9650_64", "ipq9048", "ipq9048_64"]:
         return 0
 
-    ipq_xml_path = inDir + "/" + arch
+    machid_xml_path = cdir + "/" + arch + "/machid_xml"
     data_retention_cdt_path = cdir + "/data_retention_cdt"
-    data_retention_cdt_configDir = data_retention_cdt_path + "/" + arch + "/config.xml"
-    if not os.path.exists(data_retention_cdt_path):
-        os.makedirs(data_retention_cdt_path)
-        copy_cmd = "cp -rf " + ipq_xml_path + " " + data_retention_cdt_path
+    data_retention_arch_path = data_retention_cdt_path + "/" + arch
+    data_retention_cdt_configDir = data_retention_arch_path + "/config.xml"
+    if not os.path.exists(data_retention_arch_path):
+        if not os.path.exists(data_retention_cdt_path):
+            os.makedirs(data_retention_cdt_path)
+        os.makedirs(data_retention_arch_path)
+        # Copy generated machid XMLs from the platform directory
+        copy_cmd = "cp -rf " + machid_xml_path + " " + data_retention_arch_path + "/"
         os.system(copy_cmd)
+        # Copy the original config.xml so gen_cdt_bin.py can parse board entries
+        os.system("cp " + configDir + " " + data_retention_arch_path + "/")
         sed_cmd = "sed -i.bak -e 's/<data_retention>false<\/data_retention>/<data_retention>true<\/data_retention>/' " + data_retention_cdt_configDir
         os.system(sed_cmd)
 
