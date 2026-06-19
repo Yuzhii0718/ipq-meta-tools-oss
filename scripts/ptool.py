@@ -1039,11 +1039,11 @@ def ParseXML(XMLFile):
                     elif name=="size":
                         if len(value)==0:
                             PrintBigError("\nERROR: Invalid partition size")
-                        Partition["size_in_kb"]=int(value)/2        # force as even number
+                        Partition["size_in_kb"]=int(float(value))/2        # force as even number
                     elif name=="size_in_kb":
                         if len(value)==0:
                             PrintBigError("\nERROR: Invalid partition size")
-                        Partition["size_in_kb"]=int(value)
+                        Partition["size_in_kb"]=int(float(value))
                     else:
                         Partition[name]=value
 
