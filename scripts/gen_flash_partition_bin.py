@@ -271,8 +271,8 @@ def process_nor(config_path, flash_type):
             nor_pagesize = int(nor_param.find('page_size').text)
             nor_pages_per_block = int(nor_param.find('pages_per_block').text)
             nor_total_blocks = int(nor_param.find('total_block').text)
-            block_size = (nor_pagesize * nor_pages_per_block) / 1024
-            density = (block_size * nor_total_blocks) / 1024
+            block_size = (nor_pagesize * nor_pages_per_block) // 1024
+            density = (block_size * nor_total_blocks) // 1024
 
             nor_partition = "$$/" + ARCH_NAME + "/flash_partition/" + flash_type + "-partition.xml"
             nor_partition = nor_partition.replace('$$', cdir)
@@ -333,8 +333,8 @@ def process_nor(config_path, flash_type):
     nor_pagesize = int(nor_param.find('page_size').text)
     nor_pages_per_block = int(nor_param.find('pages_per_block').text)
     nor_total_blocks = int(nor_param.find('total_block').text)
-    block_size = (nor_pagesize * nor_pages_per_block) / 1024
-    density = (block_size * nor_total_blocks) / 1024
+    block_size = (nor_pagesize * nor_pages_per_block) // 1024
+    density = (block_size * nor_total_blocks) // 1024
 
     nor_partition = "$$/" + ARCH_NAME + "/flash_partition/" + flash_type + "-partition.xml"
     nor_partition = nor_partition.replace('$$', cdir)
@@ -436,8 +436,8 @@ def process_norplusnand_device(nor_pagesize, nor_pages_per_block, nor_total_bloc
     if ARCH_NAME != "ipq806x":
         part_xml = ET.parse(norplusnand_partition)
         part = part_xml.find(".//partitions/partition[name='0:MIBIB']")
-        block_size = (nor_pagesize * nor_pages_per_block) / 1024
-        density = (block_size * nor_total_blocks) / 1024
+        block_size = (nor_pagesize * nor_pages_per_block) // 1024
+        density = (block_size * nor_total_blocks) // 1024
         part[5].text = str(block_size)
         part[6].text = str(density)
         part_xml.write(norplusnand_partition)
@@ -978,8 +978,8 @@ def process_norplusemmc_device(nor_pagesize, nor_pages_per_block, nor_total_bloc
     if ARCH_NAME != "ipq806x":
         root_part = ET.parse(norplusemmc_partition)
         part = root_part.find(".//partitions/partition[2]")
-        block_size = (nor_pagesize * nor_pages_per_block) / 1024
-        density = (block_size * nor_total_blocks) / 1024
+        block_size = (nor_pagesize * nor_pages_per_block) // 1024
+        density = (block_size * nor_total_blocks) // 1024
         part[5].text = str(block_size)
         part[6].text = str(density)
         root_part.write(norplusemmc_partition)
