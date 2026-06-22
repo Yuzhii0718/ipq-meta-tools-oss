@@ -1292,6 +1292,8 @@ def main():
     else:
         print("Configuration xml, flash type and output path are needed to generate cdt files")
 
+    outputdir = os.path.abspath(outputdir)
+    os.makedirs(outputdir, exist_ok=True)
     if funcdict[flash_type](config_path, flash_type) < 0:
         return -1
 
