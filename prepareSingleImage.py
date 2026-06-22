@@ -193,10 +193,11 @@ def gen_cdt():
     data_retention_cdt_path = cdir + "/data_retention_cdt"
     data_retention_arch_path = data_retention_cdt_path + "/" + arch
     data_retention_cdt_configDir = data_retention_arch_path + "/config.xml"
-    if not os.path.exists(data_retention_arch_path):
+    if not os.path.exists(data_retention_arch_path) or not os.path.exists(data_retention_cdt_configDir):
         if not os.path.exists(data_retention_cdt_path):
             os.makedirs(data_retention_cdt_path)
-        os.makedirs(data_retention_arch_path)
+        if not os.path.exists(data_retention_arch_path):
+            os.makedirs(data_retention_arch_path)
         # Copy generated machid XMLs from the platform directory
         copy_cmd = "cp -rf " + machid_xml_path + " " + data_retention_arch_path + "/"
         os.system(copy_cmd)
