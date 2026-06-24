@@ -9,8 +9,25 @@ import sys
 import subprocess
 import argparse
 
+# Available SDK strings and their known versions (for --help only)
+AVAILABLE_SDKS = {
+    "qca-networking-2025-spf-13-0": [
+        "r13.0_00005.0",
+        "r13.0_00006.0",
+        "r13.0_00007.0",
+    ],
+    "qca-networking-2025-spf-13-1": [
+        "r13.1.r1_00001.0",
+        "r13.1_00002.0",
+        "r13.1_00003.0",
+        "r13.1_00004.1",
+    ],
+}
+
+DEFAULT_SDK = "qca-networking-2025-spf-13-1"
+DEFAULT_VERSION = "r13.1_00004.1"
+
 # Mapping of SoC names to their respective download QART URLs
-base_url = "https://qartifactory-edge.qualcomm.com/ui/native/qsc_releases/software/chip/qca-networking-2025-spf-13-0/qca-networking-2025-spf-13-0-qca-oem-qartifact/"
 download_links = {
 	"ipq95xx": [
 		"{version}/tz-win-1-0/trustzone_images/build/ms/bin/OAPAANAA/devcfg.mbn",
@@ -80,22 +97,81 @@ download_links = {
 	]
 }
 
-def main():
-	if len(sys.argv) != 3:
-		print("Usage: python prepare_binaries.py <target_soc> <version_string>")
-		sys.exit(1)
+def build_help_epilog():
+	"""Build help epilog showing known SDKs and versions."""
+	lines = ["",
+		"Known SDK strings (any future SDK/version also accepted):",
+		"As of 2026.06.24, the following SDKs are available:",
+	]
+	for sdk, versions in AVAILABLE_SDKS.items():
+		lines.append(f"  {sdk}")
+		for v in versions:
+			lines.append(f"    - {v}")
+	lines += [
+		"",
+		"Known target_soc values:",
+	]
+	for soc in sorted(download_links.keys()):
+		lines.append(f"  {soc}")
+	lines += [
+		"",
+		"Examples:",
+		f"  python prepare_bin.py ipq53xx",
+		f"  python prepare_bin.py ipq54xx --sdk qca-networking-2025-spf-13-0 --version r13.0_00007.0",
+		f"  python prepare_bin.py ipq53xx --sdk qca-networking-2025-spf-14-0 --version r14.0_00001.0",
+	]
+	return "\n".join(lines)
 
-	target_soc = sys.argv[1]
-	version_string = sys.argv[2]
+
+def main():
+	epilog = build_help_epilog()
+	parser = argparse.ArgumentParser(
+		description="Download Qualcomm IPQ platform prebuilt binaries from QART.",
+		epilog=epilog,
+		formatter_class=argparse.RawDescriptionHelpFormatter,
+	)
+	parser.add_argument(
+		"target_soc",
+		help="Target SoC name (e.g., ipq53xx, ipq95xx, ipq54xx)",
+	)
+	parser.add_argument(
+		"--sdk", "-s",
+		default=DEFAULT_SDK,
+		help=f"SDK release string (default: {DEFAULT_SDK})",
+	)
+	parser.add_argument(
+		"--version", "-v",
+		default=DEFAULT_VERSION,
+		help=f"Version string within the SDK (default: {DEFAULT_VERSION})",
+	)
+	args = parser.parse_args()
+
+	target_soc = args.target_soc
+	sdk_string = args.sdk
+	version_string = args.version
+
 	if target_soc not in download_links:
 		print(f"Unsupported SoC: {target_soc}")
 		sys.exit(1)
 
-	target_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "prebuilts"))
+	# Build base URL from sdk_string
+	base_url = f"https://qartifactory-edge.qualcomm.com/ui/native/qsc_releases/software/chip/{sdk_string}/{sdk_string}-qca-oem-qartifact/"
+
+	# Download target: prebuilts/<target_soc>/<sdk_string>/<version_string>/
+	target_dir = os.path.abspath(
+		os.path.join(
+			os.path.dirname(os.path.abspath(__file__)),
+			"..", "prebuilts", target_soc, sdk_string, version_string
+		)
+	)
 	os.makedirs(target_dir, exist_ok=True)
 	os.chdir(target_dir)
 
-	print(f"Downloading binaries for {target_soc} into {target_dir}...\n")
+	print(f"SDK:     {sdk_string}")
+	print(f"Version: {version_string}")
+	print(f"Target:  {target_soc}")
+	print(f"Output:  {target_dir}")
+	print(f"\nDownloading binaries for {target_soc}...\n")
 
 	for url_template in download_links[target_soc]:
 		url = base_url + url_template.format(version=version_string)
