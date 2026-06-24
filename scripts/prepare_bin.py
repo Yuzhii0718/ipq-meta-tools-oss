@@ -10,7 +10,7 @@ import subprocess
 import argparse
 
 # Mapping of SoC names to their respective download QART URLs
-base_url = "https://qartifactory-edge.qualcomm.com/artifactory/qsc_releases/software/chip/qca-networking-2025-spf-13-0/qca-networking-2025-spf-13-0-qca-oem-qartifact/"
+base_url = "https://qartifactory-edge.qualcomm.com/ui/native/qsc_releases/software/chip/qca-networking-2025-spf-13-0/qca-networking-2025-spf-13-0-qca-oem-qartifact/"
 download_links = {
 	"ipq95xx": [
 		"{version}/tz-win-1-0/trustzone_images/build/ms/bin/OAPAANAA/devcfg.mbn",
