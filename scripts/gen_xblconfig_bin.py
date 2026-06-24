@@ -246,7 +246,7 @@ def main():
                     json.dump(Data, outfile)
 
                 #copy the cdt bin
-                shutil.copy2(cdir+'/'+cdt_bin, srcDir);
+                shutil.copy2(cdir+'/'+cdt_bin, srcDir)
 
                 out_xblconfig = config_name + name_suffix
                 outfile_xblconfig = os.path.join(srcDir, out_xblconfig )
