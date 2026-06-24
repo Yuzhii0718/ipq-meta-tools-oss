@@ -11,6 +11,7 @@ in
 machid_xml
 data_retention_cdt
 output
+prebuilts
 *.mbn
 *.elf
 *.bin
