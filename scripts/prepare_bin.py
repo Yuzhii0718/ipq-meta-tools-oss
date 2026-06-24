@@ -91,7 +91,7 @@ def main():
 		print(f"Unsupported SoC: {target_soc}")
 		sys.exit(1)
 
-	target_dir = os.path.abspath(os.path.join(os.getcwd(), "..", "..", "qsdk", "ipq"))
+	target_dir = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "prebuilts"))
 	os.makedirs(target_dir, exist_ok=True)
 	os.chdir(target_dir)
 
